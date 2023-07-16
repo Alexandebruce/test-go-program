@@ -1,67 +1,74 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func main() {
-	list1 := &ListNode{
-		Val: 1,
-		Next: &ListNode{
-			Val: 3,
-			Next: &ListNode{
-				Val: 4,
-				Next: &ListNode{
-					Val:  4,
-					Next: nil,
-				},
-			},
-		},
-	}
-	list2 := &ListNode{
-		Val: 1,
-		Next: &ListNode{
-			Val: 2,
-			Next: &ListNode{
-				Val: 2,
-				Next: &ListNode{
-					Val: 2,
-					Next: &ListNode{
-						Val: 4,
-						Next: &ListNode{
-							Val:  5,
-							Next: nil,
-						},
-					},
-				},
-			},
-		},
-	}
+	string1 := "1010"
+	string2 := "10101"
 
-	someShit := mergeTwoLists(list1, list2)
+	someShit := addBinary(string1, string2)
 
-	fmt.Println(someShit.Val)
+	fmt.Println(someShit)
 }
 
-func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	if list1 == nil {
-		return list2
-	}
+func addBinary(a string, b string) string {
+	len1 := len(a)
+	len2 := len(b)
+	maxLen := 0
 
-	if list2 == nil {
-		return list1
-	}
-
-	if list2.Val >= list1.Val {
-		list1.Next = mergeTwoLists(list1.Next, list2)
-
-		return list1
+	if len1 > len2 {
+		maxLen = len1
 	} else {
-		list2.Next = mergeTwoLists(list2.Next, list1)
-
-		return list2
+		maxLen = len2
 	}
-}
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
+	result := make([]byte, maxLen+1)
+	counter := maxLen
+	additionalDigit := 0
+
+	for true {
+		if counter < 0 {
+			break
+		}
+
+		currentDigit := additionalDigit
+
+		if len1 > 0 {
+			val, _ := strconv.Atoi(string(a[len1-1]))
+			currentDigit += val
+			len1--
+		}
+		if len2 > 0 {
+			val, _ := strconv.Atoi(string(b[len2-1]))
+			currentDigit += val
+			len2--
+		}
+
+		if currentDigit > 1 {
+			additionalDigit = 1
+			if currentDigit == 2 {
+				result[counter] = '0'
+			} else {
+				result[counter] = '1'
+			}
+		} else {
+			additionalDigit = 0
+			if currentDigit == 1 {
+				result[counter] = '1'
+			} else {
+				result[counter] = '0'
+			}
+		}
+
+		counter--
+	}
+
+	if result[0] != '1' {
+		return string(result[1:])
+	}
+
+	return string(result)
 }
